@@ -46,7 +46,21 @@ export class Func024 implements IFuncOrigin {
 			]
 		],
 		oper: [
+		[center, 1280, 720, 1215, 32, 1230, 50, 1000],
+		]
+	},{ // 雪御前boss挑战
+	desc: [1280, 720,
+		[
+			[center, 1222, 40, 0xe9d4d1],
+			[center, 1212, 32, 0xe9d4d1],
+			[center, 1231, 32, 0xe7d3ce],
+			[center, 1220, 27, 0xa25d8b],
+			[center, 1224, 52, 0xab4e8c],
+		]
+	],
+		oper: [
 			[center, 1280, 720, 1042, 176, 1187, 585, 500],
 		]
 	}]
+
 }
