@@ -25,6 +25,10 @@ jobs:
         with:
           node-version: 18
           cache: npm
+      - name: Configure Git to use HTTPS instead of SSH
+        run: |
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
       - run: npm install
  
       - name: Build
