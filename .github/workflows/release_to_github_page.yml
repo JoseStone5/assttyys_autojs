@@ -25,12 +25,14 @@ jobs:
         with:
           node-version: 18
           cache: npm
-      - name: Configure Git to use HTTPS with PAT instead of SSH
+      - name: Inject PAT into package.json dependencies
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git config --global url."https://${{ env.GH_PAT }}@github.com/".insteadOf "ssh://git@github.com/"
-          git config --global url."https://${{ env.GH_PAT }}@github.com/".insteadOf "git@github.com:"
+          # 直接在运行环境中将 package.json 里的私有仓库 SSH 地址替换为带 Token 的 HTTPS 地址
+          sed -i "s#ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package.json
+          sed -i "s#git+ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package.json
+          sed -i "s#git@github.com:#https://${GH_PAT}@github.com/#g" package.json
       - run: npm install
  
       - name: Build
