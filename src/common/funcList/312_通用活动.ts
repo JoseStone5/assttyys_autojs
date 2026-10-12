@@ -9,7 +9,7 @@ const right = 2;
 export class Func312 implements IFuncOrigin {
 	id = 312;
 	name = '通用活动';
-	desc: '识别到“左上角感叹号”或“右上角体力”或“右下角锁定阵容”图标后，再点设定的坐标范围，详细看手册';
+	desc: '识别到“活动右下角式神录”或原图标后，再点设定的坐标范围，详细看手册';
 	config = [{
 		desc: '',
 		config: [{
@@ -17,7 +17,7 @@ export class Func312 implements IFuncOrigin {
 			desc: '点击坐标范围，格式为：左上角x,左上角y,右下角x,右下角y，例：1134,590,1225,645',
 			type: 'text',
 			default: '1134,590,1225,645',
-			value: null,
+				value: null,
 		}]
 	}]
 	operator: IFuncOperatorOrigin[] = [{
@@ -43,38 +43,17 @@ export class Func312 implements IFuncOrigin {
 		oper: [
 			[center, 1280, 720, 1065, 252, 1151, 425, 1000],
 		]
-	}, { // 2 界面识别(测试中)
-		desc: [
-			1280, 720,
-			[
-				[right, 1245, 22, 0x654339],
-				[right, 1244, 58, 0x5b433a],
-				[right, 1240, 58, 0x6a4b3f],
-				[right, 1240, 22, 0x6a473b],
-			]
-		],
-	}, { // 3 磐长故地右上
-		desc: [
-			1280, 720,
-			[
-				[right, 1228, 33, 0xefd8c0],
-				[right, 1224, 33, 0x453834],
-				[right, 1232, 33, 0x3e3630],
-				[right, 1228, 40, 0xcec39d],
-				[right, 1221, 40, 0xd1baa3],
-				[right, 1234, 40, 0xc8ac96],
-				[right, 1223, 45, 0x544741],
-				[right, 1228, 45, 0xaea383],
-				[right, 1234, 45, 0x5d4c44],
-			]
-		],
 	}];
 	operatorFunc(thisScript: Script, thisOperator: IFuncOperator[]): boolean {
 		const thisConf = thisScript.scheme.config['312'];
 		let curCnt = 0;
 		const maxCount = 5;
-		while ((thisScript.findMultiColor('活动说明的感叹号') || thisScript.findMultiColor('体力图标') ||
-			thisScript.findMultiColor('右下角锁定阵容'))) {
+		while ((
+			thisScript.findMultiColor('活动右下角式神录') || // 新指标：当前可用
+			thisScript.findMultiColor('活动说明的感叹号') || // 原指标：UI可能已改，暂留
+			thisScript.findMultiColor('体力图标') ||       // 原指标：UI可能已改，暂留
+			thisScript.findMultiColor('右下角锁定阵容')     // 原指标：UI可能已改，暂留
+		)) {
 			curCnt++;
 			if (curCnt >= maxCount) {
 				thisScript.myToast(`连续执行${maxCount}次挑战后未开始，脚本自动停止`);
