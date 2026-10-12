@@ -25,21 +25,18 @@ jobs:
         with:
           node-version: 18
           cache: npm
-      - name: Inject PAT into package and lock files
+      - name: Setup Git Credentials for Private Repos
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          # 1. 替换 package.json
-          sed -i "s#ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package.json
-          sed -i "s#git+ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package.json
-          sed -i "s#git@github.com:#https://${GH_PAT}@github.com/#g" package.json
+          # 1. 配置 Git 凭证存储，将 PAT 写入临时凭证文件
+          git config --global credential.helper store
+          echo "https://x-access-token:${{ env.GH_PAT }}@github.com" >> ~/.git-credentials
           
-          # 2. 替换 package-lock.json（如果存在的话，npm install 默认会优先读它）
-          if [ -f "package-lock.json" ]; then
-            sed -i "s#ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package-lock.json
-            sed -i "s#git+ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package-lock.json
-            sed -i "s#git@github.com:#https://${GH_PAT}@github.com/#g" package-lock.json
-          fi
+          # 2. 将所有的 SSH 形式无缝重定向为 HTTPS 形式
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "git+ssh://git@github.com/"
       - run: npm install
  
       - name: Build
