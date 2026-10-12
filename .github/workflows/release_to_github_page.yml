@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - main          # 如果你当前默认分支是 main，请加上这一行
       - zz_dev
       - kk_dev
       - hm_dev
@@ -21,8 +20,8 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
