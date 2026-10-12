@@ -10,7 +10,8 @@ on:
       - v66_dev
       - Kong_dev
       - ui_refactor
-  workflow_dispatch:  # <--- 加上这一行！允许你在网页端点击按钮手动触发打包
+      - JoseStone5-patch-1
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -30,15 +31,31 @@ jobs:
       - name: Build
         run: npm run build2
 
-      - name: Clone Page
-        run: git clone https://github.com/${{ github.repository }}.git --branch dev_release --single-branch dev_release
-
-      - name: Pack
+      - name: Pack release files
         run: node pack_dev_release.js ${{ env.BRANCH_NAME }}
- 
-      - name: Page Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dev_release
-          publish_branch: dev_release
+
+      - name: Deploy to JoseStone5.github.io
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          # 1. 配置 Git 身份
+          git config --global user.name "GitHub Actions-Bot"
+          git config --global user.email "actions@github.com"
+          
+          # 2. 使用 PAT 克隆目标博客仓库
+          git clone https://${GH_PAT}@github.com/JoseStone5/JoseStone5.github.io.git target_blog
+          cd target_blog
+          
+          # 3. 确保目标仓库存在 assttyys_autojs 目录
+          mkdir -p assttyys_autojs
+          
+          # 4. 删除目标仓库中旧的同名分支文件夹（防止文件残留或冲突）
+          rm -rf assttyys_autojs/${{ env.BRANCH_NAME }}
+          
+          # 5. 直接把 dev_release 下的整个分支文件夹复制到 assttyys_autojs/ 目录下
+          cp -r ../dev_release/${{ env.BRANCH_NAME }} assttyys_autojs/
+          
+          # 6. 提交并推送到 JoseStone5.github.io 的 main 分支
+          git add .
+          git commit -m "Auto update assttyys_autojs/${{ env.BRANCH_NAME }} from assttyys_autojs" || echo "No changes to commit"
+          git push origin main
