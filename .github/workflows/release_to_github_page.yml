@@ -10,7 +10,6 @@ on:
       - v66_dev
       - Kong_dev
       - ui_refactor
-      - JoseStone5-patch-1
   workflow_dispatch:
 
 jobs:
