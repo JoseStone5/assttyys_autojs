@@ -54,21 +54,21 @@ export class Func312 implements IFuncOrigin {
 			]
 		],
 	}, { // 3 磐长故地右上
-    	desc: [
+		desc: [
 			1280, 720,
-	    	[
-		    	[right, 1228, 33, 0xefd8c0],
-		    	[right, 1224, 33, 0x453834],
-	    		[right, 1232, 33, 0x3e3630],
-		    	[right, 1228, 40, 0xcec39d],
-	    		[right, 1221, 40, 0xd1baa3],
-		    	[right, 1234, 40, 0xc8ac96],
-		    	[right, 1223, 45, 0x544741],
-	    		[right, 1228, 45, 0xaea383],
-	    		[right, 1234, 45, 0x5d4c44],
-    	   	]
-    	],
-    }];
+			[
+				[right, 1228, 33, 0xefd8c0],
+				[right, 1224, 33, 0x453834],
+				[right, 1232, 33, 0x3e3630],
+				[right, 1228, 40, 0xcec39d],
+				[right, 1221, 40, 0xd1baa3],
+				[right, 1234, 40, 0xc8ac96],
+				[right, 1223, 45, 0x544741],
+				[right, 1228, 45, 0xaea383],
+				[right, 1234, 45, 0x5d4c44],
+		   	]
+		],
+	}];
 	operatorFunc(thisScript: Script, thisOperator: IFuncOperator[]): boolean {
 		const thisConf = thisScript.scheme.config['312'];
 		let curCnt = 0;
