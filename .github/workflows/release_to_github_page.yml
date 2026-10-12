@@ -56,15 +56,15 @@ jobs:
             }
             fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
           '
-
+    
+      - run: npm install
+ 
       - name: Build assttyys_ui
         run: |
           cd assttyys_ui
           npm install
-          npm run build！
-
-      - run: npm install
- 
+          npm run build
+          
       - name: Build
         run: npm run build2
 
