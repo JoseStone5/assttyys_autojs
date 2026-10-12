@@ -17,7 +17,7 @@ export class Func312 implements IFuncOrigin {
 			desc: '点击坐标范围，格式为：左上角x,左上角y,右下角x,右下角y，例：1134,590,1225,645',
 			type: 'text',
 			default: '1134,590,1225,645',
-				value: null,
+			value: null,
 		}]
 	}]
 	operator: IFuncOperatorOrigin[] = [{
