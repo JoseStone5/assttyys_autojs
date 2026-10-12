@@ -10,7 +10,6 @@ on:
       - v66_dev
       - Kong_dev
       - ui_refactor
-      - JoseStone5-patch-1
   workflow_dispatch:
 
 jobs:
@@ -22,12 +21,50 @@ jobs:
         run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      # 1. 使用官方 checkout 动作带上 PAT 安全拉取私有 UI 仓库到本地的 assttyys_ui 目录
+      - name: Checkout private UI repository
+        uses: actions/checkout@v4
+        with:
+          repository: JoseStone5/assttyys_ui
+          token: ${{ secrets.GH_PAT }}
+          path: assttyys_ui
+
       - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
+
+      # 2. 用一小段 Node 脚本自动把 package.json 里的远程依赖改成指向本地文件夹
+      - name: Point dependency to local path
+        run: |
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            
+            // 遍历依赖，把包含 assttyys_ui 的依赖项路径替换为本地 file 协议
+            for (let type of ["dependencies", "devDependencies"]) {
+              if (pkg[type]) {
+                for (let dep in pkg[type]) {
+                  if (dep.includes("assttyys_ui") || (typeof pkg[type][dep] === "string" && pkg[type][dep].includes("assttyys_ui"))) {
+                    pkg[type][dep] = "file:./assttyys_ui";
+                    console.log(`Updated dependency ${dep} to local path.`);
+                  }
+                }
+              }
+            }
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
+          '
+    
       - run: npm install
  
+      - name: Build assttyys_ui
+        run: |
+          cd assttyys_ui
+          npm install
+          npm run build
+          
       - name: Build
         run: npm run build2
 
