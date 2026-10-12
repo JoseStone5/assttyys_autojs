@@ -25,14 +25,21 @@ jobs:
         with:
           node-version: 18
           cache: npm
-      - name: Inject PAT into package.json dependencies
+      - name: Inject PAT into package and lock files
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          # 直接在运行环境中将 package.json 里的私有仓库 SSH 地址替换为带 Token 的 HTTPS 地址
+          # 1. 替换 package.json
           sed -i "s#ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package.json
           sed -i "s#git+ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package.json
           sed -i "s#git@github.com:#https://${GH_PAT}@github.com/#g" package.json
+          
+          # 2. 替换 package-lock.json（如果存在的话，npm install 默认会优先读它）
+          if [ -f "package-lock.json" ]; then
+            sed -i "s#ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package-lock.json
+            sed -i "s#git+ssh://git@github.com/#https://${GH_PAT}@github.com/#g" package-lock.json
+            sed -i "s#git@github.com:#https://${GH_PAT}@github.com/#g" package-lock.json
+          fi
       - run: npm install
  
       - name: Build
