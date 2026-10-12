@@ -57,7 +57,12 @@ jobs:
             fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
           '
 
-      # 3. 此时运行 npm install，它会直接从本地安装，再也不会走 SSH 报错了！
+      - name: Build assttyys_ui
+        run: |
+          cd assttyys_ui
+          npm install
+          npm run build！
+
       - run: npm install
  
       - name: Build
