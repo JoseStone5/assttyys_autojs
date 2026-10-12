@@ -21,22 +21,43 @@ jobs:
         run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      # 1. 使用官方 checkout 动作带上 PAT 安全拉取私有 UI 仓库到本地的 assttyys_ui 目录
+      - name: Checkout private UI repository
+        uses: actions/checkout@v4
+        with:
+          repository: JoseStone5/assttyys_ui
+          token: ${{ secrets.GH_PAT }}
+          path: assttyys_ui
+
       - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
-      - name: Setup Git Credentials for Private Repos
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+
+      # 2. 用一小段 Node 脚本自动把 package.json 里的远程依赖改成指向本地文件夹
+      - name: Point dependency to local path
         run: |
-          # 1. 配置 Git 凭证存储，将 PAT 写入临时凭证文件
-          git config --global credential.helper store
-          echo "https://x-access-token:${{ env.GH_PAT }}@github.com" >> ~/.git-credentials
-          
-          # 2. 将所有的 SSH 形式无缝重定向为 HTTPS 形式
-          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
-          git config --global url."https://github.com/".insteadOf "git@github.com:"
-          git config --global url."https://github.com/".insteadOf "git+ssh://git@github.com/"
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            
+            // 遍历依赖，把包含 assttyys_ui 的依赖项路径替换为本地 file 协议
+            for (let type of ["dependencies", "devDependencies"]) {
+              if (pkg[type]) {
+                for (let dep in pkg[type]) {
+                  if (dep.includes("assttyys_ui") || (typeof pkg[type][dep] === "string" && pkg[type][dep].includes("assttyys_ui"))) {
+                    pkg[type][dep] = "file:./assttyys_ui";
+                    console.log(`Updated dependency ${dep} to local path.`);
+                  }
+                }
+              }
+            }
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
+          '
+
+      # 3. 此时运行 npm install，它会直接从本地安装，再也不会走 SSH 报错了！
       - run: npm install
  
       - name: Build
