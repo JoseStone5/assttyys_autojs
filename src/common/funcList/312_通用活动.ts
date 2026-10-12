@@ -66,7 +66,7 @@ export class Func312 implements IFuncOrigin {
 				[right, 1223, 45, 0x544741],
 				[right, 1228, 45, 0xaea383],
 				[right, 1234, 45, 0x5d4c44],
-		   	]
+			]
 		],
 	}];
 	operatorFunc(thisScript: Script, thisOperator: IFuncOperator[]): boolean {
