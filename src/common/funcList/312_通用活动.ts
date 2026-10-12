@@ -74,7 +74,12 @@ export class Func312 implements IFuncOrigin {
 		let curCnt = 0;
 		const maxCount = 5;
 		while ((thisScript.findMultiColor('活动说明的感叹号') || thisScript.findMultiColor('体力图标') ||
-			thisScript.findMultiColor('右下角锁定阵容'))) {
+			thisScript.findMultiColor('右下角锁定阵容')||
+			thisScript.oper({
+				id: 312,
+				name: '磐长故地右上',
+				operator: [thisOperator[3]]
+			}))) {
 			curCnt++;
 			if (curCnt >= maxCount) {
 				thisScript.myToast(`连续执行${maxCount}次挑战后未开始，脚本自动停止`);
