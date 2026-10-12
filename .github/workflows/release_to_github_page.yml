@@ -4,12 +4,15 @@ on:
   push:
     branches:
       - master
+      - main          # 如果你当前默认分支是 main，请加上这一行
       - zz_dev
       - kk_dev
       - hm_dev
       - v66_dev
       - Kong_dev
       - ui_refactor
+  workflow_dispatch:  # <--- 加上这一行！允许你在网页端点击按钮手动触发打包
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
