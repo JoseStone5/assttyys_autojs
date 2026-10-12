@@ -40,6 +40,9 @@ const config = {
         // libraryTarget: "commonjs2"
     },
     target: "node",
+    optimization: {
+        minimize: false,
+    },
     module: {
         rules: [
             {
