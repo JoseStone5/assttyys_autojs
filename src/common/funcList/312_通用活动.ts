@@ -48,22 +48,12 @@ export class Func312 implements IFuncOrigin {
 		const thisConf = thisScript.scheme.config['312'];
 		let curCnt = 0;
 		const maxCount = 5;
-<<<<<<< HEAD
 		while ((
-			thisScript.findMultiColor('活动右下角式神录') || // 新指标：当前可用
-			thisScript.findMultiColor('活动说明的感叹号') || // 原指标：UI可能已改，暂留
-			thisScript.findMultiColor('体力图标') ||       // 原指标：UI可能已改，暂留
-			thisScript.findMultiColor('右下角锁定阵容')     // 原指标：UI可能已改，暂留
+			thisScript.findMultiColor('活动右下角式神录') ||
+			thisScript.findMultiColor('活动说明的感叹号') ||
+			thisScript.findMultiColor('体力图标') ||
+			thisScript.findMultiColor('右下角锁定阵容')
 		)) {
-=======
-		while ((thisScript.findMultiColor('活动说明的感叹号') || thisScript.findMultiColor('体力图标') ||
-			thisScript.findMultiColor('右下角锁定阵容')||
-			thisScript.oper({
-				id: 312,
-				name: '磐长故地右上',
-				operator: [thisOperator[3]]
-			}))) {
->>>>>>> 2ff9901d8c61c57dede64f2872353c797489ae6b
 			curCnt++;
 			if (curCnt >= maxCount) {
 				thisScript.myToast(`连续执行${maxCount}次挑战后未开始，脚本自动停止`);
