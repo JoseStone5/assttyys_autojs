@@ -1,0 +1,2 @@
+package.json merge=ours
+.github/workflows/release_to_github_page.yml package.json 
