@@ -17,6 +17,11 @@ export class Func316 implements IFuncOrigin {
 			type: 'switch',
 			default: false,
 		}, {
+			name: 'onlyDouble',
+			desc: '只打双倍（双倍次数用完自动停止）',
+			type: 'switch',
+			default: true,
+		}, {
 			name: 'overTimes',
 			desc: '挂机局数，完成后自动切换方案，0表示一直刷',
 			type: 'integer',
@@ -512,6 +517,31 @@ export class Func316 implements IFuncOrigin {
 		oper: [
 			[center, 1280, 720, 1133, 601, 1207, 653, 1000],
 		]
+	}, { // 33 双倍次数为0
+		desc: [1280, 720,
+			[
+				[right, 1192, 33, 0xd4d2c1],
+				[right, 1198, 34, 0xd4d3c2],
+				[right, 1190, 40, 0xdfdecd],
+				[right, 1199, 40, 0xdfdecd],
+				[right, 1195, 40, 0x0e0e0f],
+				[right, 1191, 46, 0xd3d1c1],
+				[right, 1198, 46, 0xd4d2c1],
+			]
+		]
+	}, { // 34 柔风满层
+		desc: [1280, 720,
+			[
+				[left, 25, 91, 0xfcf5e0],
+				[left, 25, 92, 0xfaf4de],
+				[left, 25, 93, 0xf9f4df],
+				[left, 25, 94, 0xfbf6e1],
+				[left, 27, 89, 0x3f2719],
+				[left, 27, 100, 0x402b1b],
+				[left, 23, 94, 0x392417],
+				[left, 31, 94, 0x3a2417],
+			]
+		]
 	},];
 	operatorFunc(thisScript: Script, thisOperator: IFuncOperator[]): boolean {
 
@@ -621,6 +651,39 @@ export class Func316 implements IFuncOrigin {
 			thisScript.global.d6RouFeng++;
 			log('当前柔风数量:' + thisScript.global.d6RouFeng);
 			return true;
+		}
+
+		// 新增：只打双倍检测
+		if ((thisScript.scheme.config['316'] || {}).onlyDouble) {
+			if (thisScript.oper({
+				id: 316,
+				name: '六道椒图_开始战斗检测',
+				operator: [{ desc: thisOperator[9].desc }]
+			})) {
+				if (thisScript.oper({
+					id: 316,
+					name: '六道椒图_双倍次数检测',
+					operator: [thisOperator[33]]
+				})) {
+					thisScript.myToast('双倍次数已用完，停止运行');
+					console.log('双倍次数已用完，停止运行');
+					thisScript.rerun('__停止脚本__');
+					return true;
+				}
+			}
+		}
+
+		// 新增：柔风满层检测，便于接手打到一半的局
+		if (thisScript.global.d6RouFeng < 5) {
+			if (thisScript.oper({
+				id: 316,
+				name: '六道椒图_柔风满层检测',
+				operator: [{ desc: thisOperator[34].desc }]
+			})) {
+				thisScript.global.d6RouFeng = 5;
+				thisScript.myToast('柔风已满，进入速通模式');
+				console.log('检测到柔风满层，进入速通模式');
+			}
 		}
 
 		if (thisScript.oper({
