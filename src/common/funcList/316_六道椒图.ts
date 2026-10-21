@@ -288,15 +288,14 @@ export class Func316 implements IFuncOrigin {
 			[
 				[right, 1211, 657, 0xbbab7f],
 				[right, 1225, 633, 0xb8a67d],
-				[right, 1200, 45, 0x99948a],
-				[right, 1204, 43, 0x9a968b],
-				[right, 1204, 40, 0x7d7870],
-				[right, 1198, 35, 0xb2ada1],
-				[right, 1198, 33, 0xb2ada1],
+				[right, 1201, 32, 0xb6b1a4],
+				[right, 1201, 37, 0xb5b0a4],
+				[right, 1207, 41, 0xaba59a],
+				[right, 1200, 44, 0xb2aca0],
 			]
 		],
 		oper: [
-			[center, 1280, 720, 1191, 621, 1243, 676, 500],
+			[center, 1280, 720, 1191, 621, 1243, 676, 800],
 		]
 	}, { // 18 十位数的0
 		desc: [
@@ -304,14 +303,15 @@ export class Func316 implements IFuncOrigin {
 			[
 				[right, 1211, 657, 0xbbab7f],
 				[right, 1225, 633, 0xb8a67d],
-				[right, 1197, 39, 0xa7a296],
-				[right, 1205, 39, 0x8f8a80],
-				[right, 1205, 37, 0x8f8b80],
-				[right, 1197, 36, 0xa7a297],
+				[right, 1201, 32, 0xb1ab9f],
+				[right, 1207, 32, 0xaea89d],
+				[right, 1200, 38, 0xa19c91],
+				[right, 1208, 38, 0xb3aea2],
+				[right, 1203, 45, 0x979288],
 			]
 		],
 		oper: [
-			[center, 1280, 720, 1191, 621, 1243, 676, 500],
+			[center, 1280, 720, 1191, 621, 1243, 676, 800],
 		]
 	}, { // 19 boss_挑战
 		desc: [
@@ -332,12 +332,12 @@ export class Func316 implements IFuncOrigin {
 		desc: [
 			1280, 720,
 			[
-				[right, 1203, 30, 0xd9e7f4],
-				[right, 1203, 34, 0xc8dbf1],
-				[right, 1207, 32, 0xd0e4f5],
-				[right, 1220, 32, 0xc8d4ec],
-				[right, 1211, 32, 0xccdaec],
-				[right, 1202, 36, 0xb7ccec],
+				[right, 1204, 28, 0xdae3ef],
+				[right, 1209, 27, 0x274685],
+				[right, 1214, 27, 0xccccdd],
+				[right, 1204, 32, 0xd2e5f5],
+				[right, 1209, 38, 0x204891],
+				[right, 1220, 34, 0xbed2ec],
 			]
 		],
 		oper: [
@@ -409,11 +409,11 @@ export class Func316 implements IFuncOrigin {
 		desc: [
 			1280, 720,
 			[
-				[left, 217, 171, 0x4786d8],
+				[center, 217, 171, 0x4786d8],
 				[center, 490, 171, 0x4687d9],
 				[center, 762, 172, 0x4583d0],
-				[left, 263, 216, 0x5ba0f2],
-				[center, 536, 216, 0x5aa1f3],
+				[center, 262, 216, 0x5ba0f2],
+				[center, 536, 216, 0x5893de],
 				[center, 809, 216, 0x5aa1f5],
 			]
 		]
