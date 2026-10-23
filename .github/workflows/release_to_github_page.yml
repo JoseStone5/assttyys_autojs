@@ -10,6 +10,8 @@ on:
       - v66_dev
       - Kong_dev
       - ui_refactor
+  workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,25 +20,79 @@ jobs:
         shell: bash
         run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_ENV
 
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      # 1. 使用官方 checkout 动作带上 PAT 安全拉取私有 UI 仓库到本地的 assttyys_ui 目录
+      - name: Checkout private UI repository
+        uses: actions/checkout@v4
+        with:
+          repository: JoseStone5/assttyys_ui
+          token: ${{ secrets.GH_PAT }}
+          path: assttyys_ui
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
+
+      # 2. 用一小段 Node 脚本自动把 package.json 里的远程依赖改成指向本地文件夹
+      - name: Point dependency to local path
+        run: |
+          node -e '
+            const fs = require("fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            
+            // 遍历依赖，把包含 assttyys_ui 的依赖项路径替换为本地 file 协议
+            for (let type of ["dependencies", "devDependencies"]) {
+              if (pkg[type]) {
+                for (let dep in pkg[type]) {
+                  if (dep.includes("assttyys_ui") || (typeof pkg[type][dep] === "string" && pkg[type][dep].includes("assttyys_ui"))) {
+                    pkg[type][dep] = "file:./assttyys_ui";
+                    console.log(`Updated dependency ${dep} to local path.`);
+                  }
+                }
+              }
+            }
+            fs.writeFileSync("package.json", JSON.stringify(pkg, null, 2));
+          '
+    
       - run: npm install
  
+      - name: Build assttyys_ui
+        run: |
+          cd assttyys_ui
+          npm install
+          npm run build
+          
       - name: Build
         run: npm run build2
 
-      - name: Clone Page
-        run: git clone https://github.com/${{ github.repository }}.git --branch dev_release --single-branch dev_release
-
-      - name: Pack
+      - name: Pack release files
         run: node pack_dev_release.js ${{ env.BRANCH_NAME }}
- 
-      - name: Page Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dev_release
-          publish_branch: dev_release
+
+      - name: Deploy to JoseStone5.github.io
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          # 1. 配置 Git 身份
+          git config --global user.name "GitHub Actions-Bot"
+          git config --global user.email "actions@github.com"
+          
+          # 2. 使用 PAT 克隆目标博客仓库
+          git clone https://${GH_PAT}@github.com/JoseStone5/JoseStone5.github.io.git target_blog
+          cd target_blog
+          
+          # 3. 确保目标仓库存在 assttyys_autojs 目录
+          mkdir -p assttyys_autojs
+          
+          # 4. 删除目标仓库中旧的同名分支文件夹（防止文件残留或冲突）
+          rm -rf assttyys_autojs/${{ env.BRANCH_NAME }}
+          
+          # 5. 直接把 dev_release 下的整个分支文件夹复制到 assttyys_autojs/ 目录下
+          cp -r ../dev_release/${{ env.BRANCH_NAME }} assttyys_autojs/
+          
+          # 6. 提交并推送到 JoseStone5.github.io 的 main 分支
+          git add .
+          git commit -m "Auto update assttyys_autojs/${{ env.BRANCH_NAME }} from assttyys_autojs" || echo "No changes to commit"
+          git push origin main
